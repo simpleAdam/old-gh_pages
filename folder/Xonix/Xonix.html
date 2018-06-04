@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Xonix</title>
+</head>
+
+<body>
+    <canvas class="can"></canvas>
+
+    <script>
+        let canvas = document.querySelector(".can");
+        let ctx = canvas.getContext("2d");
+
+        const M = 20,
+            N = 30,
+            tileSize = 30;
+
+        var gameArray = [];
+        var enemyArray = [], enemyNum=4;
+        //let gameArray = new Array(N).fill(new Array(M).fill(0));
+        
+        for(var ei=0;ei<enemyNum;ei++){
+            enemyArray.push(new EnemyE)
+        }
+
+
+        for (var yM = 0; yM < 25; yM++) {
+
+            gameArray.push([])
+
+            for (var xN = 0; xN < 40; xN++) {
+                gameArray[yM][xN] = 0
+            }
+        }
+
+        var x = 2,
+            y = 0,
+            dx = 0,
+            dy = 0;
+        var timer = 0,
+            delay = 0.07;
+        var gamep = true;
+
+        for (var i = 0; i < M; i++) {
+            for (var j = 0; j < N; j++) {
+                if (j === 0 || j === N - 1 || i == 0 || i == M - 1) {
+                    gameArray[i][j] = 1;
+                }
+            }
+
+        }
+
+
+
+        var width = canvas.width = N * tileSize;
+        var height = canvas.height = M * tileSize;
+
+        var newImg = new Image;
+        var newImg2 = new Image;
+        var playerImg = new Image;
+        var enemyImg = new Image;
+
+        enemyImg.onload = function() {
+            draw();
+        }
+        enemyImg.src = 'lighter.gif';
+
+        newImg.onload = function() {
+            draw();
+        }
+        newImg.src = 'tile.png';
+
+        newImg2.onload = function() {
+            draw();
+        }
+        newImg2.src = 'tileB.png';
+
+        playerImg.onload = function() {
+            draw();
+        }
+        playerImg.src = "player.png"
+
+        /*var accumulator=0;
+        var lastTime=0;
+        const step = 1/60;
+        function gameloop(time=0) {
+            if (lastTime) {
+                accumulator += (time - lastTime) /1000;
+                while (accumulator> step) {
+                    update(step)
+                    accumulator-=step;
+                }
+                draw()
+            }
+            lastTime=time;
+           requestAnimationFrame(gameloop)
+        }*/
+        var gameClock = window.setInterval(update, 40)
+
+        function playerUpdate() {
+            x += dx;
+            y += dy;
+
+            if (x <= 0) {
+                x = 0
+            };
+            if (x >= N - 1) {
+                x = N - 1
+            }
+            if (y <= 0) {
+                y = 0
+            };
+            if (y >= M - 1) {
+                y = M - 1
+            }
+            //var gameTile = gameTile = gameArray[y][x];
+
+            var gameTile = gameArray[y][x]
+
+
+            if (gameTile == 0) {
+                gameArray[y][x] = 2;
+            }
+
+
+
+            if (gameTile == 1) {
+                for(var ei=0;ei<enemyNum;ei++){
+                    drop(enemyArray[ei].tileY,enemyArray[ei].tileX)
+                }
+                //drop(Enemy.tileY, Enemy.tileX)
+                //drop(Enemy2.tileY,Enemy2.tileX)
+                for (let i = 0; i < M; i++) {
+                    for (let j = 0; j < N; j++) {
+
+                        if (gameArray[i][j] == -1) {
+                            gameArray[i][j] = 0
+                        } else {
+                            gameArray[i][j] = 1
+                        }
+                    }
+                }
+            }
+
+
+        }
+        
+        function update(st) {
+            // if(gamep==false){gameover();return;}
+
+            //if(gameTile==2){gamep = false;}
+            
+            
+            for(var ei=0;ei<enemyNum;ei++){
+                enemyArray[ei].move()
+            }
+
+            //Enemy.move();
+            //Enemy2.move();
+            draw()
+            
+            
+
+        }
+
+        function drop(y, x) {
+            if (gameArray[y][x] == 0) {
+                gameArray[y][x] = -1
+            }
+            if (gameArray[y - 1][x] == 0) {
+                drop(y - 1, x)
+            }
+            if (gameArray[y + 1][x] == 0) {
+                drop(y + 1, x)
+            }
+            if (gameArray[y][x - 1] == 0) {
+                drop(y, x - 1)
+            }
+            if (gameArray[y][x + 1] == 0) {
+                drop(y, x + 1)
+            }
+        }
+
+        function draw() {
+            //ctx.clearRect(0,0,width,height)
+            ctx.fillStyle = "green";
+            ctx.fillRect(0, 0, width, height)
+
+            for (var i = 0; i < M; i++) {
+                for (var j = 0; j < N; j++) {
+                    if (gameArray[i][j] == 0) {
+                        continue
+                    }
+                    if (gameArray[i][j] == 1) {
+                        ctx.drawImage(newImg, j * tileSize, i * tileSize, tileSize, tileSize);
+                    }
+                    if (gameArray[i][j] == 2) {
+                        ctx.drawImage(newImg2, j * tileSize, i * tileSize, tileSize, tileSize);
+                    }
+                }
+            }
+            ctx.drawImage(playerImg, x * tileSize, y * tileSize, tileSize, tileSize);
+
+            //ctx.drawImage(enemyImg, Enemy.x, Enemy.y, tileSize, tileSize);
+            //ctx.drawImage(enemyImg, Enemy2.x, Enemy2.y, tileSize, tileSize);
+            
+             for(var ei=0;ei<enemyNum;ei++){
+            ctx.drawImage(enemyImg,enemyArray[ei].x,enemyArray[ei].y, tileSize, tileSize)
+        }
+
+        }
+
+
+
+        var keys = document.addEventListener('keydown', keyHandler)
+
+        function keyHandler(e) {
+            switch (e.keyCode) {
+                case 37:
+                    e.preventDefault()
+                    e.stopPropagation();
+                    dx = -1;
+                    dy = 0;
+                    playerUpdate();
+                    break;
+                case 38:
+                    e.preventDefault()
+                    e.stopPropagation();
+                    dx = 0;
+                    dy = -1;
+                    playerUpdate();
+                    break;
+                case 39:
+                    e.preventDefault()
+                    e.stopPropagation();
+                    dx = 1;
+                    dy = 0;
+                    playerUpdate();
+                    break;
+                case 40:
+                    e.preventDefault()
+                    e.stopPropagation();
+                    dx = 0;
+                    dy = 1;
+                    playerUpdate();
+                    break;
+            }
+        }
+
+/*
+        var Enemy = {
+
+            x: 300,
+            y: 300,
+            tileX: 0,
+            tileY: 0,
+            dx: Math.random() * 7,
+            dy: 5 - Math.random() % 8,
+            move: function() {
+                let ai = Math.random();
+                if (ai < 0.01) {
+                    this.dx = Math.random() * 7
+                }
+                if (ai > 0.99) {
+                    this.dx = -Math.random() * 7
+                }
+                this.x += this.dx;
+                this.y += this.dy;
+                this.tileX = Math.round(this.x / tileSize);
+                this.tileY = Math.round(this.y / tileSize);
+
+                if (gameArray[this.tileY][this.tileX] == 1) {
+                    this.dx = -this.dx;
+                    this.dy = -this.dy;
+                    //this.y+=this.dy
+                };
+                if (gameArray[this.tileY][this.tileX] == 2) {
+                    gameOver()
+                }
+
+            }
+        }
+        
+        var Enemy2 = {
+
+            x: 600,
+            y: 600,
+            tileX: 0,
+            tileY: 0,
+            dx: Math.random() * 7,
+            dy: 5 - Math.random() % 8,
+            move: function() {
+                let ai = Math.random();
+                if (ai < 0.01) {
+                    this.dx = Math.random() * 7
+                }
+                if (ai > 0.99) {
+                    this.dx = -Math.random() * 7
+                }
+                this.x += this.dx;
+                this.y += this.dy;
+                this.tileX = Math.round(this.x / tileSize);
+                this.tileY = Math.round(this.y / tileSize);
+
+                if (gameArray[this.tileY][this.tileX] == 1) {
+                    this.dx = -this.dx;
+                    this.dy = -this.dy;
+                    //this.y+=this.dy
+                };
+                if (gameArray[this.tileY][this.tileX] == 2) {
+                    gameOver()
+                }
+
+            }
+        }*/
+        
+        function EnemyE() {
+
+            this.x= Math.random()*((N-2) * tileSize);
+            this.y= Math.random()*((M-2) * tileSize);
+            this.tileX= 0;
+            this.tileY= 0;
+            this.dx= Math.random() * 5;
+            this.dy= 5 - Math.random() % 4;
+            
+        }
+        EnemyE.prototype.move = function() {
+            
+            if (gameArray[this.tileY][this.tileX] == 1) {
+                this.dx = -this.dx;
+                    this.dy = - this.dy;
+                } 
+            if (gameArray[this.tileY][this.tileX] == 2) {
+                gameOver()
+            } 
+            
+                     let ai = Math.random();
+                if (ai < 0.01) {
+                    this.dx = Math.random() * 7
+                }
+                if (ai > 0.99) {
+                    this.dx = -Math.random() * 7
+                }
+            if (ai>=0.43 && ai<0.44) {this.dx = Math.random() * 7}
+                this.x += this.dx;
+                this.y += this.dy;
+                this.tileX = Math.round(this.x / tileSize);
+                this.tileY = Math.round(this.y / tileSize);
+            
+            
+          
+
+            }
+
+
+        function gameOver() {
+            //ctx.clearRect(0,0,width,height)
+            ctx.fillStyle = "red";
+            ctx.font = "70px serif";
+            ctx.fillText("GAME OVER", width / 3, height / 3, width / 4)
+            window.clearInterval(gameClock);
+            document.removeEventListener(keys);
+
+
+        }
+
+    </script>
+</body>
+
+</html>
