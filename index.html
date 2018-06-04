@@ -1,1 +1,188 @@
-jkjk
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: darkslategrey;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .gameinfo {
+            top: 50px;
+            left=150px;
+            position: absolute;
+            width: 100px;
+            border: 5px solid red;
+            height: 100px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <canvas class="game"></canvas>
+    <div class="gameinfo">
+        <h3 class="score"></h3>
+    </div>
+    <script>
+        const canvas = document.querySelector(".game");
+        const drawContext = canvas.getContext("2d");
+        const width = canvas.width = 400;
+        const height = canvas.height = 533;
+
+        var platformL = 60,
+            platformH = 15,
+            personW = 25,
+            personH = 60,
+            personX = 100,
+            personY = 100,
+            dx = 0,
+            dy = 0,
+            h = 200,
+            inter, score = 0,
+            grace;
+
+        let plat = [];
+
+        let showScore = document.querySelector(".score")
+        document.addEventListener("keydown", keyHandler)
+        document.addEventListener("keyup", keyHandler)
+
+        function setup() {
+
+            platformL = 60, platformH = 15,
+                personW = 25, personH = 60, personX = 100, personY = 100,
+                dx = 0, dy = 0, h = 200, score = 0;
+
+            for (let i = 0; i < 10; i++) {
+                plat.push({})
+                plat[i].x = fetchRandom(width);
+                plat[i].y = fetchRandom(height)
+            }
+
+            plat.forEach(obj => {
+                if (obj.x + platformL > width) {
+                    obj.x -= platformL
+                }
+            });
+            render()
+            grace = setTimeout(setupInterval, 3000)
+            drawContext.font = "70px joystix, serif";
+            drawContext.fillStyle = "blue"
+            drawContext.fillText("3,2,1...", 100, 70, 200)
+        }
+
+        setup()
+
+        function setupInterval() {
+            inter = setInterval(update, 20)
+        }
+
+        function update() {
+            dy += 0.5;
+            personY += dy;
+            personX += dx
+            if (personY > height) {
+                endgame()
+            }
+            if(personX>width){personX=0}
+            if(personX<0){personX=width}
+
+            for (let i = 0; i < 10; i++) {
+                if ((personX + 22 > plat[i].x) &&
+                    (personX + 20 < plat[i].x + 75) &&
+                    (personY + 69 > plat[i].y) &&
+                    (personY + 69 < plat[i].y + 14) &&
+                    (dy > 0)) {
+                    dy = -16
+                }
+            }
+
+            if (personY < h) {
+                for (let i = 0; i < 10; i++) {
+                    personY = h;
+                    plat[i].y = plat[i].y - dy;
+
+                    if (plat[i].y > height) {
+                        plat[i].y = 0;
+                        plat[i].x = fetchRandom(width)
+                        score += 10;
+                        showScore.textContent = "Score: " + score;
+                    }
+
+                }
+            }
+
+            render()
+        }
+
+
+        function fetchRandom(def = 1) {
+            return Math.floor(Math.random() * def)
+        }
+
+        function endgame() {
+            clearInterval(inter);
+            clearTimeout(grace)
+            alert("Score: " + score + " The End")
+            setup()
+        }
+
+        function render() {
+            drawContext.fillStyle = "azure";
+            drawContext.fillRect(0, 0, width, height)
+            for (let j = 0; j < plat.length; j++) {
+                drawContext.fillStyle = "green";
+                drawContext.fillRect(plat[j].x, plat[j].y, 60, 15)
+            }
+            drawContext.fillStyle = "red"
+            drawContext.fillRect(personX, personY, personW, personH)
+        }
+
+
+        function keyHandler(e) {
+            if (e.type === "keydown") {
+                switch (e.keyCode) {
+                    case 37:
+                        dx = -4;
+                        break;
+                    case 38:
+                        //dy-=2
+                        break;
+                    case 39:
+                        dx = 4
+                        break;
+                    case 40:
+
+                        break;
+                }
+            }
+            if (e.type === "keyup") {
+                switch (e.keyCode) {
+                    case 37:
+                        dx = 0
+                        break;
+                    case 38:
+                        ;
+                        break;
+                    case 39:
+                        dx = 0;
+                        break;
+                    case 40:
+
+                        break;
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
