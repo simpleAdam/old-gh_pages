@@ -65,8 +65,9 @@
         var docm = document.getElementById("touchm")
         docp.addEventListener("click", cb)
         
-        
+        docp.addEventListener("touchmove", cbb)
         docp.addEventListener("touchstart", cb)
+        docp.addEventListener("touchend", cb)
 
         
         function cb(e) {
@@ -74,19 +75,25 @@
             docp.innerHTML=e.type;
             
             if(e.type == "touchstart")
-            {docp.addEventListener("touchmove", cbb)
-                //console.log(e.touches)
+            {
                 docp.innerHTML=e.type + "  " + e.touches[0].pageX;
             
-            function cbb(e) {
+            }
+            if(e.type == "touchend")
+            {
+                docp.innerHTML=e.type + "  " + e.touches[0].pageX;
+            
+            }
+        }
+        
+        
+        function cbb(e) {
                    docm.innerHTML=e.changedTouches[0].pageX + "  " + 
                        e.changedTouches[0].radiusX + "  " + 
                        e.changedTouches[0].rotationAngle + "  " + 
                        e.changedTouches[0].force;
                        ; 
                 }
-            }
-        }
         
 
 
