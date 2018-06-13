@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Document</title>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+   
 
     <style>
         
@@ -53,11 +53,13 @@
 
     </div>
     
-    <p id="touchp">FFF</p>
+    <p id="touchp">touchbox</p>
     
     <br><br><br>
     
-    <p id="touchm">MMM</p>
+    <p id="touchm">touchmove data</p>
+    
+     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
     <script>
         
@@ -76,16 +78,15 @@
             
             if(e.type == "touchstart")
             {
-                docp.innerHTML=e.type + "  " + e.touches[0].pageX;
+                docp.innerHTML=e.type + "  " + touches.length + "  ";
+                for (var i=0; i < e.touches.length; i++) {
+                    docp.innerHTML+=e.touches[i].pageX
+                }
             
             }
             if(e.type == "touchend")
             {
                 docp.innerHTML=e.type + "  ";
-                for (var i=0; i < e.touches.length; i++) {
-                    docp.innerHTML+=e.touches[i].pageX
-                }
-            
             }
         }
         
