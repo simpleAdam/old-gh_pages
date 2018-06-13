@@ -39,7 +39,9 @@
         
         docp.addEventListener("touchmove", cbb, false)
         docp.addEventListener("touchstart", cb, false)
-        docp.addEventListener("touchend", cb, false)
+        docp.addEventListener("touchend", cb, false);
+        
+        var touchObj = {}
 
         
         function cb(e) {
@@ -68,7 +70,12 @@
         
         
         function cbb(e) {
+            
+            touchObj.pointX = e.targetTouches[0].clientX;
+      touchObj.pointY = e.targetTouches[0].clientY;
+            
             docp.style.marginLeft=String(e.changedTouches[0].pageX-100)+"px";
+            docp.style.marginTop=String(touchObj.pointY-100)+"px";
             
                 docm.innerHTML=e.changedTouches[0].pageX + "  " + 
                        e.changedTouches[0].radiusX + "  " + 
