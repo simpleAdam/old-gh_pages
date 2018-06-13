@@ -86,8 +86,8 @@
             
             tchinfo.innerHTML = touchObj.pointX + " <br>  " + touchObj.pointY;
             
-  touchObj.pointX = evt.targetTouches[0].pageX;
-      touchObj.pointY = evt.targetTouches[0].clientX;
+  touchObj.pointX = evt.targetTouches[0].pageX-300;
+      touchObj.pointY = evt.targetTouches[0].pageY;
 }
         
         
