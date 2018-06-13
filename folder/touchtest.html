@@ -60,7 +60,7 @@
             if(e.type == "touchend")
             {
                 docp.innerHTML=e.type + "  ";
-                docp.style.marginLeft=docp.style.marginLeft=String(e.touches[0].pageX-100)+"px";;
+                
             }
                 
                 
@@ -68,6 +68,8 @@
         
         
         function cbb(e) {
+            docp.style.marginLeft=String(e.touches[0].pageX-100)+"px";
+            
                 docm.innerHTML=e.changedTouches[0].pageX + "  " + 
                        e.changedTouches[0].radiusX + "  " + 
                        e.changedTouches[0].rotationAngle + "  " + 
