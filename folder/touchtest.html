@@ -48,10 +48,15 @@
     </div>
     
     <p id="touchp">FFF</p>
+    
+    <br><br><br>
+    
+    <p id="touchm">MMM</p>
 
     <script>
         
-        var docp = document.getElementById("touchp")
+        var docp = document.getElementById("touchp");
+        var docm = document.getElementById("touchm")
         docp.addEventListener("click", cb)
         
         
@@ -59,7 +64,15 @@
 
         
         function cb(e) {
-            docp.innerHTML=e.target;
+            if(e.type == "touchstart")
+            {docp.addEventListener("touchmove", cbb)
+                
+                docp.innerHTML=e.type + "  " + e.touches;
+            
+            function cbb(e) {
+                   docm.innerHTML=e.changedTouches; 
+                }
+            }
         }
         
 
