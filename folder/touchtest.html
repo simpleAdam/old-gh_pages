@@ -66,8 +66,8 @@
         function cb(e) {
             if(e.type == "touchstart")
             {docp.addEventListener("touchmove", cbb)
-                
-                docp.innerHTML=e.type + "  " + e.touches;
+                //console.log(e.touches)
+                docp.innerHTML=e.type + "  " + JSON.stringify(e.touches);
             
             function cbb(e) {
                    docm.innerHTML=e.changedTouches; 
