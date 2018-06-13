@@ -65,17 +65,17 @@
 
         let showScore = document.querySelector(".score")
         
-  canvas.addEventListener("touchstart", handleStart, false);
-  canvas.addEventListener("touchend", handleEnd, false);
-  canvas.addEventListener("touchcancel", handleCancel, false);
-  canvas.addEventListener("touchmove", handleMove, false);
+  document.addEventListener("touchstart", handleStart, false);
+  document.addEventListener("touchend", handleEnd, false);
+  document.addEventListener("touchcancel", handleCancel, false);
+  
         
         document.addEventListener("keydown", keyHandler)
         document.addEventListener("keyup", keyHandler)
   
         function handleStart(evt) {
   evt.preventDefault();
-  
+  document.addEventListener("touchmove", handleMove, false);
 }
         
         
