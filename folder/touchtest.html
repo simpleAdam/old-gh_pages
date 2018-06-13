@@ -81,7 +81,10 @@
             }
             if(e.type == "touchend")
             {
-                docp.innerHTML=e.type + "  " + e.touches[0].pageX;
+                docp.innerHTML=e.type + "  ";
+                for (var i=0; i < e.touches.length; i++) {
+                    docp.innerHTML+=e.touches[i].pageX
+                }
             
             }
         }
