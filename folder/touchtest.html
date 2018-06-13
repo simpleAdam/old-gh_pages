@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <style>
+        
+        .torbayWeather{
+            /*display:inline-block;
+            border:10px groove midnightblue;*/
+            margin:0 auto;
+            padding:15px;
+            background: url("0001.png") no-repeat;
+            font-size: 18px;
+        }
+        
+        .weatherToday, .weatherTomorrow {
+            display:inline-block;
+            border:silver solid 5px;
+            padding:15px;
+            font-size:22px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <div class="torbayWeather">
+        <p>Torbay Weather Forecast</p>
+        <div class="today">
+            <p>Today: </p>
+            <div class="weatherToday">
+
+            </div>
+        </div>
+    <div class="tomorrow">
+           <p>Tomorrow: </p>
+            <div class="weatherTomorrow">
+
+            </div>
+        </div>
+
+    </div>
+    
+    <p id="touchp">FFF</p>
+
+    <script>
+        
+        var docp = document.getElementById("touchp")
+        docp.addEventListener("click", cb)
+        
+        
+        docp.addEventListener("touchstart", cb)
+
+        
+        function cb(e) {
+            docp.innerHTML=e.target;
+        }
+        
+
+
+    </script>
+</body>
+
+</html>
