@@ -14,7 +14,7 @@
             border:10px groove midnightblue;*/
             margin:0 auto;
             padding:15px;
-            background: url("0001.png") no-repeat;
+            
             font-size: 18px;
         }
         
@@ -67,10 +67,14 @@
             if(e.type == "touchstart")
             {docp.addEventListener("touchmove", cbb)
                 //console.log(e.touches)
-                docp.innerHTML=e.type + "  " + JSON.stringify(e.touches);
+                docp.innerHTML=e.type + "  " + e.touches;
             
             function cbb(e) {
-                   docm.innerHTML=e.changedTouches; 
+                   docm.innerHTML=e.changedTouches[0].pagesX + "  " + 
+                       e.changedTouches[0].radiusX + "  " + 
+                       e.changedTouches[0].rotationAngle + "  " + 
+                       e.changedTouches[0].force;
+                       ; 
                 }
             }
         }
