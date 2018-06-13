@@ -23,7 +23,7 @@
 
 <body>
     
-    <p id="touchp">touchbox</p>
+    <p id="touchp">touchbox move 2d</p>
     
     <br><br><br>
     
@@ -78,9 +78,7 @@
             docp.style.marginTop=String(touchObj.pointY-100)+"px";
             
                 docm.innerHTML=e.changedTouches[0].pageX + "  " + 
-                       e.changedTouches[0].radiusX + "  " + 
-                       e.changedTouches[0].rotationAngle + "  " + 
-                       e.changedTouches[0].force;
+                       e.changedTouches[0].clientXl
                        ; 
                
                 }
