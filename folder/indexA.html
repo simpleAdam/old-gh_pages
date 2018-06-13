@@ -55,10 +55,10 @@
 
         let showScore = document.querySelector(".score")
         
-  el.addEventListener("touchstart", handleStart, false);
-  el.addEventListener("touchend", handleEnd, false);
-  el.addEventListener("touchcancel", handleCancel, false);
-  el.addEventListener("touchmove", handleMove, false);
+  canvas.addEventListener("touchstart", handleStart, false);
+  canvas.addEventListener("touchend", handleEnd, false);
+  canvas.addEventListener("touchcancel", handleCancel, false);
+  canvas.addEventListener("touchmove", handleMove, false);
   
         function handleStart(evt) {
   evt.preventDefault();
@@ -70,8 +70,8 @@
         function handleMove(evt) {
   evt.preventDefault();
             move=true;
-  touchObj.pointX = e.targetTouches[0].pageX;
-      touchObj.pointY = e.targetTouches[0].pageY;
+  touchObj.pointX = evt.targetTouches[0].pageX;
+      touchObj.pointY = evt.targetTouches[0].pageY;
 }
         
         
