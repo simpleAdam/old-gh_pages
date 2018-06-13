@@ -50,10 +50,35 @@
             grace;
 
         let plat = [];
+        let targettouches=[];
 
         let showScore = document.querySelector(".score")
+        
+        document.addEventListener("touchstart", touchhandler)
         document.addEventListener("keydown", keyHandler)
         document.addEventListener("keyup", keyHandler)
+        
+        function touchhandler(event) {
+            document.addEventListener("touchmove", movehandler);
+            //document.addEventListener("touchend")
+            //document.addEventListener("touchcancel")
+            
+            if (event.targetTouches.length == 1) {
+    var touch = event.targetTouches[0];
+                
+                function movehandler(event) {
+                     for (var i = 0; i < event.touches.length; i++) {
+    var touch = event.touches[i];
+    drawContext.beginPath();
+                         drawContext.fillStyle="red";
+    drawContext.arc(touch.pageX, touch.pageY, 20, 0, 2*Math.PI, true);
+    drawContext.fill();
+    drawContext.stroke();
+  }
+                }
+            
+        }
+        }
 
         function setup() {
 
