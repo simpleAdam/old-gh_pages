@@ -9,23 +9,9 @@
 
     <style>
         
-        .torbayWeather{
-            /*display:inline-block;
-            border:10px groove midnightblue;*/
-            margin:0 auto;
-            padding:15px;
-            
-            font-size: 18px;
-        }
-        
-        .weatherToday, .weatherTomorrow {
-            display:inline-block;
-            border:silver solid 5px;
-            padding:15px;
-            font-size:22px;
-        }
         
         #touchp {
+            position: relative;
             height:200px;
             width:200px;
             background-color: burlywood;
@@ -36,22 +22,6 @@
 </head>
 
 <body>
-    <div class="torbayWeather">
-        <p>Torbay Weather Forecast</p>
-        <div class="today">
-            <p>Today: </p>
-            <div class="weatherToday">
-
-            </div>
-        </div>
-    <div class="tomorrow">
-           <p>Tomorrow: </p>
-            <div class="weatherTomorrow">
-
-            </div>
-        </div>
-
-    </div>
     
     <p id="touchp">touchbox</p>
     
@@ -73,8 +43,9 @@
 
         
         function cb(e) {
-            
+            console.log(e)
             docp.innerHTML=e.type;
+            docp.style.marginLeft=String(e.clientX-100)+"px";
             
             if(e.type == "touchstart")
             {
@@ -82,24 +53,27 @@
                 for (var i=0; i < e.touches.length; i++) {
                     docp.innerHTML+=e.touches[i].pageX
                 }
+                
+                //docp.style.marginLeft=e.touches[0].pageX;
             
             }
             if(e.type == "touchend")
             {
                 docp.innerHTML=e.type + "  ";
+                docp.style.marginLeft=docp.style.marginLeft=String(e.touches[0].pageX-100)+"px";;
             }
+                
+                
         }
         
         
         function cbb(e) {
-                   /*docm.innerHTML=e.changedTouches[0].pageX + "  " + 
+                docm.innerHTML=e.changedTouches[0].pageX + "  " + 
                        e.changedTouches[0].radiusX + "  " + 
                        e.changedTouches[0].rotationAngle + "  " + 
                        e.changedTouches[0].force;
-                       ; */
-            
-            for (var i=0; i < e.changedTouches.length; i++) {
-     docm.innerHTML="changedTouches[" + i + "].identifier = " + e.changedTouches[i].identifier;}   
+                       ; 
+               
                 }
         
 
