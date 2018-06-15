@@ -16,17 +16,18 @@
 
         .gameinfo {
             top: 50px;
-            left:5px;
+            left: 5px;
             position: absolute;
             width: 100px;
             border: 5px solid red;
             height: 100px;
         }
-        .touchinfo{
-            top:200px;
-            left:5px;
+
+        .touchinfo {
+            top: 200px;
+            left: 5px;
             position: absolute;
-            color:white;
+            color: white;
         }
 
     </style>
@@ -46,6 +47,15 @@
         const width = canvas.width = 400;
         const height = canvas.height = 533;
         const tchinfo = document.querySelector(".touchinfo");
+        var imgloaded = false
+
+        var gamePerson = new Image;
+        gamePerson.addEventListener("load", imgloadcb);
+        gamePerson.src = "characterAtlas.png";
+
+        function imgloadcb() {
+            imgloaded = true;
+        }
 
         var platformL = 60,
             platformH = 15,
@@ -60,55 +70,64 @@
             grace;
 
         let plat = [];
-        var touchObj = {};
+        
+        var touchObj = {
+            currentX:0,
+            currentY:0,
+            oldX:0,
+            oldY:0
+        };
+        
         var move = false;
 
         let showScore = document.querySelector(".score")
-        
-  document.addEventListener("touchstart", handleStart, false);
-  document.addEventListener("touchend", handleEnd, false);
-  document.addEventListener("touchcancel", handleCancel, false);
-  
-        
+
+        document.addEventListener("touchstart", handleStart, false);
+        document.addEventListener("touchend", handleEnd, false);
+        document.addEventListener("touchcancel", handleCancel, false);
+
+
         document.addEventListener("keydown", keyHandler)
         document.addEventListener("keyup", keyHandler)
-  
+
         function handleStart(evt) {
-  evt.preventDefault();
-  document.addEventListener("touchmove", handleMove, false);
-}
-        
-        
-        
+            evt.preventDefault();
+            document.addEventListener("touchmove", handleMove, false);
+        }
+
+
+
         function handleMove(evt) {
-  evt.preventDefault();
-            move=true;
-            
-            tchinfo.innerHTML = touchObj.pointX + " <br>  " + touchObj.pointY;
-            
-  touchObj.pointX = evt.targetTouches[0].pageX-300;
-      touchObj.pointY = evt.targetTouches[0].pageY;
-}
-        
-        
-        
+            evt.preventDefault();
+            move = true;
+
+            tchinfo.innerHTML = touchObj.currentX + " <br>  " + touchObj.currentY;
+
+            touchObj.currentX = oldX - (evt.targetTouches[0].pageX - 300);
+            touchObj.currentY = oldY (evt.targetTouches[0].pageY);
+            touchObj.oldX = evt.targetTouches[0].pageX - 300;
+            touchObj.oldY = evt.targetTouches[0].pageY;
+        }
+
+
+
         function handleEnd(evt) {
-  evt.preventDefault();
-  move=false;
-}
-        
-        
-        
+            evt.preventDefault();
+            move = false;
+        }
+
+
+
         function handleCancel(evt) {
-  evt.preventDefault();
-  
-}
-        
-        
-        
-        
-        
-        
+            evt.preventDefault();
+
+        }
+
+
+
+
+
+
         function setup() {
 
             platformL = 60, platformH = 15,
@@ -144,14 +163,18 @@
             personY += dy;
             personX += dx
             if (move) {
-              
-            personX = touchObj.pointX;  
+
+                personX += touchObj.currentX;
             }
             if (personY > height) {
                 endgame()
             }
-            if(personX>width){personX=0}
-            if(personX<0){personX=width}
+            if (personX > width) {
+                personX = 0
+            }
+            if (personX < 0) {
+                personX = width
+            }
 
             for (let i = 0; i < 10; i++) {
                 if ((personX + 22 > plat[i].x) &&
@@ -200,8 +223,21 @@
                 drawContext.fillStyle = "green";
                 drawContext.fillRect(plat[j].x, plat[j].y, 60, 15)
             }
-            drawContext.fillStyle = "red"
-            drawContext.fillRect(personX, personY, personW, personH)
+            if (imgloaded && dy <= 1.9) {
+                drawContext.drawImage(
+                    gamePerson, 20, 9, 34, 49,
+                    personX, personY, personW, personH
+                )
+            } else if (imgloaded && dy > 1.89) {
+                drawContext.drawImage(
+                    gamePerson, 20, 76, 34, 36,
+                    personX, personY, personW, personH
+                )
+            }
+            /*else {
+                           drawContext.fillStyle = "red"
+                           drawContext.fillRect(personX, personY, personW, personH)
+                       }*/
         }
 
 
