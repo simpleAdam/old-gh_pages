@@ -101,12 +101,15 @@
             evt.preventDefault();
             move = true;
 
-            tchinfo.innerHTML = touchObj.currentX + " <br>  " + touchObj.currentY;
+            tchinfo.innerHTML = touchObj.currentX + " <br>  " + touchObj.currentY + "<br> touches:: " + touchObj.oldX + " " + touchObj.oldY + " <br>  sub: " + touchObj.subX;
+            
+            touchObj.subX = touchObj.currentX - evt.targetTouches[0].pageX - 300;
 
-            touchObj.currentX = oldX - (evt.targetTouches[0].pageX - 300);
-            touchObj.currentY = oldY (evt.targetTouches[0].pageY);
-            touchObj.oldX = evt.targetTouches[0].pageX - 300;
-            touchObj.oldY = evt.targetTouches[0].pageY;
+            touchObj.currentX = evt.targetTouches[0].pageX - 300;
+            touchObj.currentY = evt.targetTouches[0].pageY;
+            touchObj.oldX = evt.touches[0].pageX - 300;
+            touchObj.oldY = evt.touches[0].pageY;
+            
         }
 
 
