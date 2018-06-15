@@ -75,7 +75,8 @@
             currentX:0,
             currentY:0,
             oldX:0,
-            oldY:0
+            oldY:0,
+            subX:0
         };
         
         var move = false;
@@ -117,12 +118,27 @@
         function handleEnd(evt) {
             evt.preventDefault();
             move = false;
+            touchObj = {
+            currentX:0,
+            currentY:0,
+            oldX:0,
+            oldY:0,
+            subX:0
+        };
         }
 
 
 
         function handleCancel(evt) {
             evt.preventDefault();
+            move = false;
+            touchObj = {
+            currentX:0,
+            currentY:0,
+            oldX:0,
+            oldY:0,
+            subX:0
+        };
 
         }
 
