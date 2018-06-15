@@ -118,11 +118,11 @@
         function handleEnd(evt) {
             evt.preventDefault();
             move = false;
-            touchObj.currentX:0,
-            touchObj.currentY:0,
-            touchObj.oldX:0,
-            touchObj.oldY:0,
-            touchObj.subX:0
+            touchObj.currentX=0;
+            touchObj.currentY=0;
+            touchObj.oldX=0;
+            touchObj.oldY=0;
+            touchObj.subX=0;
         }
 
 
@@ -130,8 +130,11 @@
         function handleCancel(evt) {
             evt.preventDefault();
             move = false;
-            
-
+            touchObj.currentX=0;
+            touchObj.currentY=0;
+            touchObj.oldX=0;
+            touchObj.oldY=0;
+            touchObj.subX=0;
         }
 
 
@@ -173,7 +176,7 @@
             dy += 0.5;
             personY += dy;
             personX += dx
-            if (move) {
+            if (move /*&& Math.abs(touchObj.subX)<10*/) {
 
                 personX += touchObj.subX;
             }
