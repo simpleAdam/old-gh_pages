@@ -103,9 +103,9 @@
 
             tchinfo.innerHTML = touchObj.currentX + " <br>  " + touchObj.currentY + "<br> touches:: " + touchObj.oldX + " " + touchObj.oldY + " <br>  sub: " + touchObj.subX;
             
-            touchObj.subX = touchObj.currentX - evt.targetTouches[0].pageX - 300;
+            touchObj.subX = touchObj.currentX - evt.targetTouches[0].pageX;
 
-            touchObj.currentX = evt.targetTouches[0].pageX - 300;
+            touchObj.currentX = evt.targetTouches[0].pageX;
             touchObj.currentY = evt.targetTouches[0].pageY;
             touchObj.oldX = evt.touches[0].pageX - 300;
             touchObj.oldY = evt.touches[0].pageY;
@@ -167,7 +167,7 @@
             personX += dx
             if (move) {
 
-                personX += touchObj.currentX;
+                personX += touchObj.subX;
             }
             if (personY > height) {
                 endgame()
