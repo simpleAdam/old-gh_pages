@@ -5,26 +5,111 @@
     <title>Document</title>
 </head>
 <style>
+    body{
+        background-color: antiquewhite;
+    }
     a{
         height:50px;
         font-size: 22px;
         padding: 15px;
     }
     
+    ul{
+        display: flex;
+        flex-direction: column;
+        position:absolute;
+            top:11%;
+            left:5%;
+            transform: translate(0%,-5%);
+            margin:0;
+            padding:0px;
+    }
+    ul li {
+            list-style: none;
+            margin: 40px 20px;
+        }
+    ul li a {
+            font-size: 38px;
+            line-height: 40px;
+            transition:.5s;
+        position: relative;
+            display: block;
+            background: #ccc;
+            text-align: center;
+            -webkit-transform:rotate(-9deg) skew(33deg) translate(0,0);
+            transition: .25s;
+            box-shadow: -20px 20px 10px rgba(0,0,0,0.5);
+        }
+    ul li a:before {
+            content: "";
+            position: absolute;
+            top:10px;
+            left:-20px;
+            height:80px;
+            width:20px;
+            background: #b1b1b1;
+            transition:.25s;
+            transform:rotate(0deg) skewY(-45deg);
+            
+        }
+        
+        ul li a:after {
+            content: "";
+            position: absolute;
+            bottom:-20px;
+            left:-10px;
+            height:20px;
+            width:100%;
+            background: #919191;
+            transition:.25s;
+            transform:rotate(0deg) skewX(-45deg);
+        }
+    
+    ul li a:hover {
+            -webkit-transform:rotate(-30deg) skew(25deg) translate(20px 20px);
+            box-shadow: -25px 25px 95px rgba(55,55,55,0.65),-25px 25px 28px rgba(105,5,5,0.95);
+        }
+            
+        ul li a:hover::before{
+                background-color:rgba(165,165,165,0.7);
+            width:0px;
+            }
+        ul li a:hover::after{
+                background-color:pink;
+            height:0px;
+            }
+    
+    iframe{
+        position: absolute;
+        left:36%;
+        top:5%;
+        border:7px solid rgba(15,15,150,.3);
+    }
+    
+    
+    
+    
+    
     </style>
 <body>
+  
    <ul>
-       <li class="item"><a href="folder/indexA.html" class="a_item">A</a></li>
-       <li class="item"><a href="folder/indexB.html" class="a_item">B</a></li>
-       <li class="item"><a href="folder/Xonix/Xonix.html" class="a_item">Xonix</a></li>
-       <li class="item"><a href="" class="a_item"></a></li>
-       <li class="item"><a href="" class="a_item"></a></li>
-       <li class="item"><a href="" class="a_item"></a></li>
-       <li class="item"><a href="" class="a_item"></a></li>
-       <li class="item"><a href="" class="a_item"></a></li>
-       <li class="item"><a href="" class="a_item"></a></li>
-       <li class="item"><a href="" class="a_item"></a></li>
+       <li class="item"><a href="#" class="a_item" id="doodle">Doodle Jump</span></a></li>
+       <li class="item"><a href="#" class="a_item" id="snake">Snake</a></li>
+       <li class="item"><a href="#" class="a_item" id="xonix">Xonix</a></li>
+       <li class="item"><a href=# class="a_item" id="racer">Racer</a></li>
+       <li class="item"><a href=# class="a_item" id="isom">Isometric</a></li>
+       <li class="item"><a href="#" class="a_item">Touch test</a></li>
+       <li class="item"><a href="#" class="a_item">empty</a></li>
+       <li class="item"><a href="#" class="a_item">empty</a></li>
+       <li class="item"><a href="#" class="a_item">empty</a></li>
+       <li class="item"><a href="#" class="a_item">empty</a></li>
    </ul>
+   
+   <iframe src="folder/indexA.html" frameborder="0" width=60% height=90%></iframe>
+   
+   <!--
+   
     <hr>
     <a href="folder/indexA.html">DoodleJump</a>
     <hr>
@@ -36,6 +121,28 @@
     <hr>
     <a href="folder/Isometric/iso.html">Isometric example</a>
     <hr>
-    <a href="folder/touchtest.html">touch</a>
+    <a href="folder/touchtest.html">touch</a>-->
+    
+    <script>
+    const showFrame = document.querySelector("iframe");
+        
+        var list = document.querySelector("ul");
+        list.addEventListener("click", cb)
+        var urls = {
+            "doodle":"folder/indexA.html",
+            "snake":"folder/indexB.html",
+            "xonix":"folder/Xonix/xonix.html",
+            "racer":"folder/jsRacer/index.html",
+            "isom":"folder/Isometric/iso.html",
+            "touch":"folder/touchtest.html"
+        }
+        function cb(e) {
+            if(e.target.hasAttribute("id")){
+            let targ=e.target.getAttribute("id")
+            let source=urls[targ]
+            showFrame.setAttribute("src",source);}
+        }
+    
+    </script>
 </body>
 </html>
