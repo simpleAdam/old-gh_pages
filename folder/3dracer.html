@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <canvas class="game"></canvas>
+    
+    <script>
+    
+        cnv = document.querySelector(".game");
+        ctx = cnv.getContext("2d");
+        
+        cnv.width=1000;
+        cnv.height=600;
+        let mov=0, px=0, movx=0;
+        
+        let mouseX=0;
+        
+        let adjustX=cnv.width/2, adjustY=cnv.height/2;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        let rGame=null;
+        let N=null;
+        
+        
+        
+        class Sprites {
+        constructor(img) {
+            this.image = img
+        }
+        
+        define(name) {
+          const buffer = document.createElement("canvas") 
+          buffer.width=1000;
+            buffer.height=300;
+            buffer.getContext("2d").drawImage(this.image,0,0,buffer.width.buffer.height)
+        }
+    }
+        
+        
+        
+        class Racegame {
+            constructor() {
+               this.camera = new Camera();
+                this.roadW =2000;
+                this.segmentL = 200;
+                this.track =[];
+                this.startPos= 0;
+            }
+            
+            
+        }
+        
+        class Camera {
+            constructor() {
+                this.x=0,this.y=3500,this.z=0;
+                this.depth=0.84
+            }
+        }
+        
+        
+        
+        
+        
+        class Line {
+            constructor() {
+                this.worldX=0,this.worldY=0,this.worldZ=0;
+                this.screenX=0,this.screenY=0,this.screenW=0;
+                this.curve=0, this.scale=0;
+                
+            }
+            
+            project(camX,camY,camZ) {
+                this.scale = rGame.camera.depth/(this.worldZ-camZ);
+                this.screenX = (1+this.scale*(this.worldX-camX)) * adjustX;
+                this.screenY = (1-this.scale*(this.worldY-camY)) * adjustY;
+                this.screenW = this.scale * rGame.roadW * adjustX
+            }
+        }
+            
+            
+        function buildTrack() {
+            for(let i=0;i<1600;i++) {
+                let l = new Line;
+                l.worldZ=i*rGame.segmentL;
+                
+                if(i>130 && i<950) {
+                    l.worldY= Math.sin(i/25)*2500;
+                }
+                
+                if(i>100 && i<190) {
+                    l.curve+=1.5;
+                }
+                if(i>200 && i<430) {
+                    l.curve+=3.5;
+                }
+                if(i>440 && i<1230) {
+                    l.curve-=0.7;
+                }
+                
+                if(i>1150 && i<1450) {
+                    l.worldY= Math.sin(i/30)*1000;
+                }
+                
+                rGame.track.push(l)
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        function drawQuad (colour,x1,y1,w1,x2,y2,w2) {
+        ctx.fillStyle=colour||"green";
+        ctx.beginPath()
+        ctx.moveTo(x1-w1,y1);
+        ctx.lineTo(x2-w2,y2)
+        ctx.lineTo(x2+w2,y2)
+        ctx.lineTo(x1+w1,y1);
+        ctx.fill();
+    }
+        
+        let mod=0;
+        let maxy = cnv.height/2;
+        
+        function render() {
+            
+            while(rGame.camera.z >= 1600*rGame.segmentL) {rGame.camera.z-=1600*rGame.segmentL}
+            while(rGame.camera.z<-50) {rGame.camera.z+=1600*rGame.segmentL}
+            
+            rGame.camera.z+=mov;
+            px+=movx*8
+            //console.log(px)
+            //console.log("camerax: "+rGame.camera.x)
+            rGame.startPos=(Math.floor(rGame.camera.z/rGame.segmentL));
+            //console.log(rGame.track[rGame.startPos].worldY);
+            rGame.camera.y=rGame.track[rGame.startPos].worldY+2350;
+            if(rGame.camera.y<=600){rGame.camera.y=600;}
+            
+            ctx.clearRect(0,0,cnv.width,cnv.height);
+            ctx.drawImage(bgimage,0,0,cnv.width,cnv.height/1.5)
+            
+            for(let n=rGame.startPos;n<400+rGame.startPos;n++) {
+               
+                let l = rGame.track[(n+1)%1600];
+                
+                
+                l.project(px-rGame.camera.x,rGame.camera.y,rGame.camera.z-(n>=1600?1600*rGame.segmentL:1));
+                
+                rGame.camera.x+=mod-(mouseX*200) // look left or right 
+                mod+=l.curve;
+                
+                
+                
+                if(l.screenY<=maxy) {break}
+                
+                //maxy=l.screenY+2000;
+                
+                let Colour = {
+                grass:(n/7)%2?"rgb(16,200,16)":"rgb(0,154,0)",
+                rumble:(n/2)%2?"rgb(255,25,25)":"rgb(0,0,0)",
+                road:(n/4)%1?"rgb(107,107,107)":"rgb(85,85,85)",
+                
+            }
+                let p = rGame.track[n%1600];
+                
+                if(l.screenY>=rGame.camera.y || l.worldZ<rGame.camera.z) {continue;}
+                
+                drawQuad(Colour.grass,0,p.screenY,cnv.width,0,l.screenY,cnv.width)
+                 drawQuad(Colour.rumble,p.screenX,p.screenY+1,p.screenW*1.2,l.screenX,l.screenY,l.screenW*1.2)
+                drawQuad(Colour.road,p.screenX,p.screenY+2,p.screenW,l.screenX,l.screenY,l.screenW)
+                
+            }
+            //console.log(rGame.camera.x)
+            //console.log(mod)
+            //console.log("camerax: "+rGame.camera.x)
+            //let mx=mod+px
+            rGame.camera.x=mod
+            //console.log("with mod mx: "+rGame.camera.x)
+            //rGame.camera.x+=px;
+            //console.log("withpx: "+rGame.camera.x)
+            //px=px+(movx*mov*mod*0.00003)
+            mod=0;
+            
+            //console.log(rGame.startPos)
+            //console.log(maxy)
+            
+        }
+        
+        let bgimage = null;
+        
+        function gameinit() {
+            
+            function loadimg() {
+                return new Promise((resolve) => {
+                
+                var bgimg = new Image();
+                bgimg.addEventListener("load", function() {
+                    
+                    resolve(bgimg)
+                })
+                bgimg.src="./bgp.jpeg"
+            })
+            }
+            
+            
+            
+            loadimg().then( function(img) {
+                //ctx.drawImage(img,0,0,cnv.width,cnv.height/2);
+               bgimage =img;
+                setInterval(render,30)
+                
+                
+            })
+        
+            rGame = new Racegame();
+            N = 1600
+            //console.log(rGame)
+            
+                
+            
+        
+            buildTrack()
+            document.addEventListener("keydown",keycb)
+            document.addEventListener("mousemove",mousecb)
+            
+        
+        }
+        
+        gameinit();
+        
+        function keycb(e) {
+            e.preventDefault();
+            if(e.code==="ArrowUp") {
+                mov+=4
+                
+               
+            }
+            if(e.code==="ArrowDown") {
+                mov-=18;
+                
+            }
+            if(e.code==="ArrowLeft") {
+                movx-=3;
+               
+            }
+            if(e.code==="ArrowRight") {
+                movx+=3;
+                
+            }
+        
+        }
+        
+        function mousecb(e) {
+            mouseX = (e.offsetX-adjustX)/adjustX
+           // console.log(mouseX)
+        }
+        
+        
+    
+    
+    
+    
+    </script>
+</body>
+</html>
