@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .titlegame {
+            height: 100px;
+            background-color: beige;
+            border: 3px solid burlywood;
+            margin: 10px;
+            text-align: center;
+            font-size: 50px;
+            color: darkgreen;
+        }
+
+        canvas {
+            display: block;
+            margin: 0px auto;
+            border: 15px solid mintcream;
+        }
+
+        body {
+            background-color:black;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="titlegame">SNAKE GRID</div>
+    <canvas class="game"></canvas>
+    <script>
+        //GAMESTUFF
+        const canvas = document.querySelector(".game");
+        const drawContext = canvas.getContext("2d");
+
+        var N, M, size,
+            width = canvas.width = size * N,
+            height = canvas.height = size * M;
+
+        //SNAKE STUFF
+        var dir = 0,
+            num = 4,
+            s = [];
+
+
+
+
+        //Fruit
+
+        var fruit = {
+            x: null,
+            y: null
+        }
+
+        //TIME
+        gameInitialise()
+        window.setInterval(update, 80)
+
+        function gameInitialise() {
+            N = 30, M = 18, size = 40,
+                width = canvas.width = size * N,
+                height = canvas.height = size * M,
+                dir, num = 4;
+            fruitRandom();
+            snakePush();
+
+
+
+            console.log(s)
+        }
+
+        function snakePush() {
+            for (let maxL = 100; maxL >= 0; maxL--) {
+                s.push({
+                    x: 0,
+                    y: 0
+                })
+            }
+        }
+
+
+        function update() {
+            for (let i = num; i > 0; --i) {
+                s[i].x = s[i - 1].x;
+                s[i].y = s[i - 1].y;
+            }
+
+            if (dir === 0) s[0].y += 1;
+            if (dir === 1) s[0].x -= 1;
+            if (dir === 2) s[0].x += 1;
+            if (dir === 3) s[0].y -= 1;
+
+            if ((s[0].x == fruit.x) && (s[0].y == fruit.y)) {
+                num++
+                fruitRandom()
+            }
+
+            if (s[0].x > N) {
+                s[0].x = 0
+            };
+            if (s[0].x < 0) {
+                s[0].x = N 
+            }
+            if (s[0].y > M) {
+                s[0].y = 0
+            };
+            if (s[0].y < 0) {
+                s[0].y = M 
+            }
+
+            for (let l = 1; l < num; l++) {
+                if ((s[0].x == s[l].x) && (s[0].y == s[l].y)) {
+                    num = l
+                }
+            }
+
+            draw()
+        }
+
+        function draw() {
+            drawContext.fillStyle = "white";
+            drawContext.fillRect(0, 0, width, height)
+
+            for (let i = 0; i < N; i++) {
+                for (let j = 0; j < M; j++) {
+                    drawbase(i, j, "black")
+                }
+            }
+
+            drawbase(fruit.x, fruit.y, "red")
+
+
+            for (let k = 0; k < num; k++) {
+                drawbase(s[k].x, s[k].y, "lightgreen")
+            }
+        }
+
+        function fruitRandom() {
+            fruit.x = Math.floor(Math.random() * N);
+            fruit.y = Math.floor(Math.random() * M);
+        }
+
+        function drawbase(i, j, colour) {
+            drawContext.fillStyle = colour;
+            drawContext.fillRect(i * size, j * size, size, size)
+            drawContext.strokeStyle = "white";
+            drawContext.strokeRect(i * size, j * size, size, size);
+        }
+
+        document.addEventListener("keydown", keyHandler)
+
+        function keyHandler(e) {
+            if (e.type === "keydown") {
+                switch (e.keyCode) {
+                    case 37:
+                        e.preventDefault()
+                        dir = 1;
+                        break;
+                    case 38:
+                        e.preventDefault()
+                        dir = 3;
+                        break;
+                    case 39:
+                        e.preventDefault()
+                        dir = 2;
+                        break;
+                    case 40:
+                        e.preventDefault()
+                        dir = 0;
+                        break;
+                }
+            }
+            
+        }
+
+    </script>
+</body>
+
+</html>

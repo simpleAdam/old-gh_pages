@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: black;
+        }
+        canvas{
+            display: block;
+            border:2px solid lightblue;
+            margin:0px auto;
+            margin-top:45px;
+            
+        }
+        
+    </style>
+</head>
+<body>
+    <canvas class="game"></canvas>
+    
+    <audio class="music"
+  src="racerMusic.mp3"
+  autoplay loop="true">
+</audio>
+
+    <script>
+        const canvas = document.querySelector(".game");
+        const drawContext = canvas.getContext("2d");
+        const width=canvas.width=window.innerWidth-50;
+        const height=canvas.height=window.innerHeight-50;
+        
+            drawContext.font="50px serif";
+        drawContext.fillStyle="blue"
+        drawContext.fillText("LOADING", 50,height/3)
+        
+        //GAME VARIABLES
+        var x=75,y=410,speed=4,angle=0,
+            maxSpeed=12,acc=0.2,dec=0.5,
+            turnSpeed=0.061;
+        var up=0,right=0,down=0,left=0;
+        
+        var offsetX=0, offsetY=0;
+        
+        var mph=0;
+        
+        //BIND DOM
+        var music = document.querySelector(".music")
+        music.volume = 0.26;
+        
+        //BIND EVENTS
+        document.addEventListener("keydown", keyHandler)
+        document.addEventListener("keyup", keyHandler)
+        
+        count=0;
+        
+        const background = new Image;
+        const car = new Image
+        const car2 = new Image
+        
+        background.src="bfqatt.jpg";
+        car.src="car.png";
+        car2.src="car2.png";
+        
+        
+        background.onload = function() {
+            count++
+        }
+        car.onload = function() {
+            count++
+        }
+        car2.onload = function() {
+            count++
+        }
+        
+        
+        var checkNum=12;
+        var checkpoints = [[220,844],[92,386],
+                           [444,178],[500,224],
+                           [638,516],[875,556],
+                           [1274,300],[1474,372],
+                           [1490,718],[1420,946],
+                           [522,942],[292,1082],
+                          ]
+        
+        
+        
+        let EnemyCar = {
+            x:0,y:0,speed:0,angle:0,nn:0,
+            move: function() {
+                
+                this.x+=Math.sin(this.angle)*this.speed;
+                this.y-=Math.cos(this.angle)*this.speed;
+                var tx=checkpoints[this.nn][0];
+                var ty=checkpoints[this.nn][1];
+                var beta = this.angle-Math.atan2(tx-this.x,-ty+this.y);
+                if(Math.sin(beta)<0) {this.angle+=0.08}
+                else this.angle-=0.08;
+                
+                if((this.x-tx)*(this.x-tx)+(this.y-ty)*(this.y-ty)<85*85) {
+                    console.log(this.nn)
+                    this.nn=(this.nn+1)%checkNum}
+            }
+        }
+        
+        EnemyCar.x=220;
+        EnemyCar.y=844;
+        EnemyCar.speed=11;
+        
+        setTimeout(runGame,2000)
+        //drawContext.translate(width/2,height/2)
+        function runGame(){
+        if(count==3){
+            console.log("load")
+        window.setInterval(update,1000/30)
+        }
+        }
+        
+        function update(time) {
+            
+            
+            if (up && speed<maxSpeed) {
+                if(speed<maxSpeed/1.7)speed += acc*0.7
+                else speed+=acc*.4
+            }
+            if (down && speed>-maxSpeed) {
+                if(speed>0) speed -= dec
+                else speed -=acc/3
+            }
+            
+            if (!up && !down) {
+                if (speed - dec > 0) {speed -= dec/3}
+                else if (speed + dec <0) {speed += dec/3}
+                else speed = 0
+            }
+            
+            /*
+            if (right && speed!=0) { angle += turnSpeed * speed/maxSpeed} 
+            if (left && speed!=0) { angle -= turnSpeed * speed/maxSpeed} 
+            */
+           
+            
+            if(left){angle-=turnSpeed}
+            if(right){angle+=turnSpeed}
+            
+            //if(up && speed<maxSpeed){speed+=acc;}
+            //if(down && speed>0){speed-=dec}
+            
+            
+            
+            collision(x,y)
+            EnemyCar.move();
+            
+            
+            
+            x+= Math.sin(angle) * speed;
+            y-= Math.cos(angle) * speed;
+            
+            if(x>300) offsetX=x-300;
+            if(y>300) offsetY=y-300;
+            
+            if(x<10){x=10};
+            if(y<20){y=20;}
+            if(x>1620){x=1620}
+            if(y>1210){y=1210}
+            
+            mph=speed*5;
+            draw()
+        }
+        
+        function draw() {
+            drawContext.clearRect(0,0,1720,1260)
+            
+        setBackground(x,y,background)
+            
+        drawRotated(car,x-offsetX,y-offsetY,angle)
+            
+            drawRotated(car2,EnemyCar.x-offsetX,EnemyCar.y-offsetY,EnemyCar.angle)
+            
+            drawText()
+            //drawRotated(car,EnemyCar.x,EnemyCar.y,EnemyCar.angle)
+        }
+        
+        function drawText() {
+            drawContext.fillStyle="yellow"
+            drawContext.font="30px menlo"
+            drawContext.fillText("mph: " + Math.floor(mph),25,50,150)
+        }
+        
+        function setBackground(x,y,img) {
+            drawContext.save()
+            
+            drawContext.drawImage(img,-offsetX,-offsetY,1720,1260);
+            drawContext.restore();
+        }
+        
+        function drawRotated(image, itsX,itsY,withAng) {
+            drawContext.save()
+            
+            drawContext.translate(itsX,itsY)
+            drawContext.rotate(withAng)
+        drawContext.drawImage(image,-image.width/2,-image.height/2,image.width,image.height);
+            
+           drawContext.restore();
+        }
+        
+        function keyHandler(e) {
+            if(e.type==="keydown") {
+
+                switch (e.keyCode) {
+                        case 37:
+
+                        left=1;
+                        e.preventdefault();
+                        break;
+                        case 38:
+                        up=1;
+                        e.preventdefault();
+                        break;
+                        case 39:
+                        right=1;
+                        e.preventdefault();
+                        break;
+                        case 40:
+                        down=1;
+                        e.preventdefault();
+                        break;
+                                 }
+            }
+            if(e.type==="keyup") {
+                switch (e.keyCode) {
+                        case 37:
+                        left=0;
+                        break;
+                        case 38:
+                        up=0;
+                        break;
+                        case 39:
+                        right=0;
+                        break;
+                        case 40:
+                        down=0;
+                        break;
+            }
+        }
+        }
+        
+        function collision(x,y) {
+            var dx = x-EnemyCar.x;
+            var dy = y-EnemyCar.y;
+            if(dx*dx+dy*dy<4*24*24) {
+                x+=dx/10;
+                y+=dy/10;
+                EnemyCar.x-=dx/5;
+                EnemyCar.y-=dy/5;
+            }
+        }
+        
+    
+    let testrand = console.log(Math.random()%625)
+    
+    </script>
+</body>
+</html>

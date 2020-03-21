@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <canvas class="game"></canvas>
+    
+    
+    <script>
+    const canvas = document.querySelector(".game");
+        const drawContext = canvas.getContext("2d");
+        const width=canvas.width=window.innerWidth-50;
+        const height=canvas.height=window.innerHeight-50;
+        
+        document.addEventListener("mousemove", handleMouse);
+        document.addEventListener('click', handleClick);
+        document.addEventListener("wheel", zoom)
+        //game vars
+        var zoomFactor=1;
+        var mouseX=0, mouseY=0, tilenumX = 8,tilenumY=8;
+        var tileWidth=56, tileHeight=29;
+        var renderRate=180;
+        
+        var grid = [
+            [0,0,0,0,0,0,0,0,],
+            [0,0,0,0,0,0,0,0,],
+             [1,1,1,1,1,1,1,1],
+             [0,0,0,0,0,0,0,0,],
+             [0,0,0,0,0,0,0,0,],
+             [0,0,0,0,0,0,0,0,],
+             [0,0,0,0,0,0,0,0,],
+             [0,0,0,0,0,0,0,0,],
+        ]
+        
+        var img = document.createElement("img");
+        img.addEventListener("load", function() {
+        render()
+        })
+        img.src="tileset2.png";
+        
+        window.setInterval(render, renderRate)
+        
+        function logMouse() {
+            console.log(mouseX + " : " + mouseY)
+        
+        }
+        
+        window.setInterval(drawMouse,renderRate)
+        
+        drawContext.translate(width/2,100) //top central
+        
+        
+        
+        function drawImageTile(x,y,index) {
+            drawContext.save()
+            drawContext.translate((x-y)*tileWidth/2,(x+y)*tileHeight/2);
+            
+            drawContext.drawImage(img,index*tileWidth,9,tileWidth,img.height,
+                                 -tileWidth/2,0,tileWidth,img.height)
+            
+            
+            drawContext.restore()
+            
+            
+        }
+        
+        function render(){
+            drawContext.clearRect(-width/2,100,width,height)
+        for (let i=0;i<grid.length;i++) {
+            var row =grid[i]
+            for (let j =0;j<grid.length;j++) {
+                drawImageTile(i,j,row[j])
+            }
+        }}
+        
+        
+        function getColour() {
+            var r = Math.floor(Math.random()*255);
+            var g = Math.floor(Math.random()*255);
+            var b = Math.floor(Math.random()*255);
+            let rgb = "rgb(" + r + "," + g + "," + b +")";
+            return rgb;
+        }
+        
+        
+        
+        function handleMouse(evt) {
+            let rect = canvas.getBoundingClientRect();
+let root = document.documentElement;
+
+tempMouseX = evt.clientX -rect.left - root.scrollLeft;
+tempMouseY = evt.clientY -rect.top - root.scrollTop;
+            ytranslate = ((tempMouseX -width/2)/tileWidth)
+            xtranslate = ((tempMouseY -100)/tileHeight)
+            ynumber = Math.floor(-ytranslate+xtranslate)
+            xnumber = Math.floor(xtranslate+ytranslate)
+            mouseX=xnumber,mouseY=ynumber;
+            //drawMouse(mouseX,mouseY,"yellow")
+            
+    
+        }
+        
+        function handleClick(){
+            let x = mouseX, y=mouseY;
+            
+            grid[x][y]=(grid[x][y]+1)%16
+        }
+        
+        function drawMouse() {
+            let x = mouseX, y=mouseY;
+            if(x>=0 && x<tilenumX && y>=0 && y<tilenumY){
+            
+            drawContext.save()
+            drawContext.translate((x-y)*tileWidth/2,(x+y)*tileHeight/2);
+            
+            drawContext.beginPath();
+            drawContext.moveTo(0,0)
+            drawContext.lineTo(tileWidth/2,tileHeight/2)
+            drawContext.lineTo(0, tileHeight)
+            drawContext.lineTo(-tileWidth/2,tileHeight/2)
+            drawContext.closePath()
+            
+            drawContext.strokeStyle="yellow";
+            drawContext.stroke();
+            drawContext.fillStyle="rgba(20,20,20,0.2)";
+            drawContext.fill();
+            
+            
+            drawContext.restore()
+        }
+            
+            else {return}
+        }
+        
+        function zoom(e) {
+            zoomFactor+=e.deltaY/800
+        }
+        
+    
+    </script>
+    
+    
+</body>
+</html>

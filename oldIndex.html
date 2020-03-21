@@ -1,0 +1,120 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        background-color: antiquewhite;
+    }
+    a{
+        height:50px;
+        font-size: 22px;
+        padding: 15px;
+    }
+    
+    ul{
+        display: flex;
+        flex-direction: column;
+        position:absolute;
+            top:11%;
+            left:5%;
+            transform: translate(0%,-5%);
+            margin:0;
+            padding:0px;
+    }
+    ul li {
+            list-style: none;
+            margin: 40px 20px;
+        }
+    ul li a {
+            font-size: 38px;
+            line-height: 40px;
+        width:29vh;
+        height:auto;
+            transition:.5s;
+        position: relative;
+            display: block;
+            background: #ccc;
+            text-align: center;
+            box-shadow: -20px 20px 10px rgba(0,0,0,0.5);
+        transition: border .5s;
+        }
+    
+    ul li a:hover {
+        border-left:8px solid red;
+        
+    }
+    
+    iframe{
+        position: absolute;
+        left:36%;
+        top:5%;
+        border:7px solid rgba(15,15,150,.3);
+        
+    }
+    
+    
+    
+    
+    </style>
+<body>
+  
+   <ul>
+     <li class="item"><a href="#" class="a_item" id="mine">Minsweeper</a></li>
+      <li class="item"><a href="#" class="a_item" id="doodle">Doodle Jump</a></li>
+       <li class="item"><a href="#" class="a_item" id="snake">Snake</a></li>
+       <li class="item"><a href="#" class="a_item" id="xonix">Xonix</a></li>
+       <li class="item"><a href=# class="a_item" id="racer">Racer</a></li>
+       <li class="item"><a href=# class="a_item" id="isom">Isometric</a></li>
+       <li class="item"><a href="#" class="a_item" id="touch">Touch test</a></li>
+       <li class="item"><a href="#" class="a_item" id="pseudo">pseudo3d racer</a></li>
+       <li class="item"><a href="#" class="a_item">empty</a></li>
+   </ul>
+   
+<iframe src="{{site.baseurl}}/assets/folder/minesweeper.html" width=60% height=90%></iframe>
+   
+   <!--
+   
+    <hr>
+    <a href="{{site.baseurl}}/assets/folder/indexA.html">DoodleJump</a>
+    <hr>
+    <a href="{{site.baseurl}}/assets/folder/indexB.html">Snake</a>
+    <hr>
+    <a href="{{site.baseurl}}/assets/folder/Xonix/Xonix.html">Xonix</a>
+    <hr>
+    <a href="{{site.baseurl}}/assets/folder/jsRacer/index.html">Racer</a>
+    <hr>
+    <a href="{{site.baseurl}}/assets/folder/Isometric/iso.html">Isometric example</a>
+    <hr>
+    <a href="{{site.baseurl}}/assets/folder/touchtest.html">touch</a>-->
+    
+    <script>
+    const showFrame = document.querySelector("iframe");
+        
+        var list = document.querySelector("ul");
+        list.addEventListener("click", cb)
+        var urls = {
+            "doodle":"{{site.baseurl}}/assets/folder/indexA.html",
+            "snake":"{{site.baseurl}}/assets/folder/indexB.html",
+            "xonix":"{{site.baseurl}}/assets/folder/Xonix/Xonix.html",
+            "racer":"{{site.baseurl}}/assets/folder/jsRacer/index.html",
+            "isom":"{{site.baseurl}}/assets/folder/Isometric/iso.html",
+            "touch":"{{site.baseurl}}/assets/folder/touchtest.html",
+            "mine":"{{site.baseurl}}/assets/folder/minesweeper.html",
+             "pseudo":"{{site.baseurl}}/assets/folder/3dracer.html"
+        }
+        function cb(e) {
+            if(e.target.hasAttribute("id")){
+            let targ=e.target.getAttribute("id")
+            let source=urls[targ]
+            showFrame.setAttribute("src",source);}
+        }
+    
+    </script>
+</body>
+</html>

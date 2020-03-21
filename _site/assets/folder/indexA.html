@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DoodleJump from FamTrinli</title>
+    <style>
+        body {
+            background-color: darkslategrey;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .gameinfo {
+            top: 50px;
+            left: 5px;
+            position: absolute;
+            width: 100px;
+            border: 5px solid red;
+            height: 100px;
+        }
+
+        .touchinfo {
+            top: 200px;
+            left: 5px;
+            position: absolute;
+            color: white;
+        }
+
+    </style>
+</head>
+
+<body>
+    <canvas class="game"></canvas>
+    <div class="gameinfo">
+        <h3 class="score"></h3>
+    </div>
+    <div class="touchinfo">
+        <h3 class="score">touch info</h3>
+    </div>
+    <script>
+        const canvas = document.querySelector(".game");
+        const drawContext = canvas.getContext("2d");
+        const width = canvas.width = 400;
+        const height = canvas.height = 533;
+        const tchinfo = document.querySelector(".touchinfo");
+        var imgloaded = false
+
+        var gamePerson = new Image;
+        gamePerson.addEventListener("load", imgloadcb);
+        gamePerson.src = "characterAtlas.png";
+
+        function imgloadcb() {
+            imgloaded = true;
+        }
+
+        var platformL = 60,
+            platformH = 15,
+            personW = 25,
+            personH = 60,
+            personX = 100,
+            personY = 100,
+            dx = 0,
+            dy = 0,
+            h = 200,
+            inter, score = 0,
+            grace;
+
+        let plat = [];
+        
+        var touchObj = {
+            currentX:0,
+            currentY:0,
+            oldX:0,
+            oldY:0,
+            subX:0
+        };
+        
+        var move = false;
+
+        let showScore = document.querySelector(".score")
+
+        document.addEventListener("touchstart", handleStart, false);
+        document.addEventListener("touchend", handleEnd, false);
+        document.addEventListener("touchcancel", handleCancel, false);
+
+
+        document.addEventListener("keydown", keyHandler)
+        document.addEventListener("keyup", keyHandler)
+
+        function handleStart(evt) {
+            evt.preventDefault();
+            document.addEventListener("touchmove", handleMove, false);
+        }
+
+
+
+        function handleMove(evt) {
+            evt.preventDefault();
+            move = true;
+
+            tchinfo.innerHTML = touchObj.currentX + " <br>  " + touchObj.currentY + "<br> touches:: " + touchObj.oldX + " " + touchObj.oldY + " <br>  sub: " + touchObj.subX;
+            
+            touchObj.subX = evt.targetTouches[0].pageX -touchObj.currentX;
+
+            touchObj.currentX = evt.targetTouches[0].pageX;
+            touchObj.currentY = evt.targetTouches[0].pageY;
+            touchObj.oldX = evt.touches[0].pageX - 300;
+            touchObj.oldY = evt.touches[0].pageY;
+            
+        }
+
+
+
+        function handleEnd(evt) {
+            evt.preventDefault();
+            move = false;
+            touchObj.currentX=0;
+            touchObj.currentY=0;
+            touchObj.oldX=0;
+            touchObj.oldY=0;
+            touchObj.subX=0;
+        }
+
+
+
+        function handleCancel(evt) {
+            evt.preventDefault();
+            move = false;
+            touchObj.currentX=0;
+            touchObj.currentY=0;
+            touchObj.oldX=0;
+            touchObj.oldY=0;
+            touchObj.subX=0;
+        }
+
+
+
+
+
+
+        function setup() {
+
+            platformL = 60, platformH = 15,
+                personW = 25, personH = 60, personX = 100, personY = 100,
+                dx = 0, dy = 0, h = 200, score = 0;
+
+            for (let i = 0; i < 10; i++) {
+                plat.push({})
+                plat[i].x = fetchRandom(width);
+                plat[i].y = fetchRandom(height)
+            }
+
+            plat.forEach(obj => {
+                if (obj.x + platformL > width) {
+                    obj.x -= platformL
+                }
+            });
+            render()
+            grace = setTimeout(setupInterval, 3000)
+            drawContext.font = "70px joystix, serif";
+            drawContext.fillStyle = "blue"
+            drawContext.fillText("3,2,1...", 100, 70, 200)
+        }
+
+        setup()
+
+        function setupInterval() {
+            inter = setInterval(update, 20)
+        }
+
+        function update() {
+            dy += 0.5;
+            personY += dy;
+            personX += dx
+            if (move && Math.abs(touchObj.subX)<30) {
+
+                personX += touchObj.subX;
+            }
+            if (personY > height) {
+                endgame()
+            }
+            if (personX > width) {
+                personX = 0
+            }
+            if (personX < 0) {
+                personX = width
+            }
+
+            for (let i = 0; i < 10; i++) {
+                if ((personX + 22 > plat[i].x) &&
+                    (personX + 20 < plat[i].x + 75) &&
+                    (personY + 69 > plat[i].y) &&
+                    (personY + 69 < plat[i].y + 14) &&
+                    (dy > 0)) {
+                    dy = -16
+                }
+            }
+
+            if (personY < h) {
+                for (let i = 0; i < 10; i++) {
+                    personY = h;
+                    plat[i].y = plat[i].y - dy;
+
+                    if (plat[i].y > height) {
+                        plat[i].y = 0;
+                        plat[i].x = fetchRandom(width)
+                        score += 10;
+                        showScore.textContent = "Score: " + score;
+                    }
+
+                }
+            }
+
+            render()
+        }
+
+
+        function fetchRandom(def = 1) {
+            return Math.floor(Math.random() * def)
+        }
+
+        function endgame() {
+            clearInterval(inter);
+            clearTimeout(grace)
+            alert("Score: " + score + " The End")
+            setup()
+        }
+
+        function render() {
+            drawContext.fillStyle = "azure";
+            drawContext.fillRect(0, 0, width, height)
+            for (let j = 0; j < plat.length; j++) {
+                drawContext.fillStyle = "green";
+                drawContext.fillRect(plat[j].x, plat[j].y, 60, 15)
+            }
+            if (imgloaded && dy <= 1.9) {
+                drawContext.drawImage(
+                    gamePerson, 20, 9, 34, 49,
+                    personX, personY, personW, personH
+                )
+            } else if (imgloaded && dy > 1.89) {
+                drawContext.drawImage(
+                    gamePerson, 20, 76, 34, 36,
+                    personX, personY, personW, personH
+                )
+            }
+            /*else {
+                           drawContext.fillStyle = "red"
+                           drawContext.fillRect(personX, personY, personW, personH)
+                       }*/
+        }
+
+
+        function keyHandler(e) {
+            if (e.type === "keydown") {
+                switch (e.keyCode) {
+                    case 37:
+                        dx = -4;
+                        break;
+                    case 38:
+                        //dy-=2
+                        break;
+                    case 39:
+                        dx = 4
+                        break;
+                    case 40:
+
+                        break;
+                }
+            }
+            if (e.type === "keyup") {
+                switch (e.keyCode) {
+                    case 37:
+                        dx = 0
+                        break;
+                    case 38:
+                        ;
+                        break;
+                    case 39:
+                        dx = 0;
+                        break;
+                    case 40:
+
+                        break;
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>

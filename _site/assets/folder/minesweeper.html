@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>mys</title>
+</head>
+
+<style>
+    body{
+        margin:0 auto;
+        text-align: center;
+    }
+    
+    .test{
+        margin-top:55px;
+    }
+    
+    .menu{
+        position: absolute;
+        top:5; left:5;
+        width:100vw;
+        background-color: maroon;
+        color: azure;
+        display:block;
+        font-size: 20px;
+        padding-top:10px;
+         padding-bottom:10px;
+    }
+    .menu span {
+        position:relative;
+        margin-left:20px;
+        list-style: none;
+    }
+    .declare {
+        padding:10px;
+        margin-top:5px;
+        background-color: darkslateblue;
+    }
+    
+    .declare > button {
+        padding:5px 15px; 
+    background:#ccc; 
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+        font-size: 25px;
+        box-shadow: 5px 5px 15px black;;
+        color: purple;
+    }
+    
+    .declare > button:hover {
+        color:rebeccapurple;
+    }
+    
+    .declare > button:active {
+        user-select: none;
+        font-size: 25px;
+        box-shadow: 2px 2px 5px plum;
+    }
+    
+    </style>
+
+<body>
+   <div class="menu"><span class="livesText">minesweepers left:</span><span class="lives">&#x2660; 3</span><span>minesweepers dead</span><span class="dead">&#x2620;</span></div>
+    <canvas class="test"></canvas>
+    <div class="declare"> <button class="declare_btn">Declare</button></div>
+    <script>
+        var canvas = document.querySelector(".test");
+        var context = canvas.getContext("2d");
+        var mnu = document.querySelector("body")
+
+var livesDOM = mnu.querySelector(".lives");
+        var deadDOM = mnu.querySelector(".dead");
+        var declare = mnu.querySelector(".declare_btn")
+        
+        declare.addEventListener("mouseup", winnerCheck)
+        
+        
+    let lives =4;
+        //livesDOM.innerHTML="&#x2627; "+lives;
+
+        let grid = {
+            t: 9,
+            w: 50,
+            grid: [],
+            sgrid: []
+        }
+        
+        let bombLocations = [];
+        
+        function winnerCheck() {
+            let b =bombLocations.length
+            let win=0;
+            let missed=0
+            
+            bombLocations.forEach((entry) => {
+                if (grid.sgrid[entry.x][entry.y]===11) {
+                     win+=1;
+                   }
+                if(grid.sgrid[entry.x][entry.y]===9) {
+                    missed++;
+                }
+            })
+            
+            if(win+missed===b) {
+                alert("winner"+"\n"+
+                          "You found "+win+" of "+b+" bombs successfully\n"+
+                         "with "+lives+" minesweepers remaining")
+                window.location.reload();
+            } else {
+                alert("sorry");
+            }
+            
+            
+            
+        }
+        
+
+        function scaleX() {
+            if (grid.w / 2 > 20) {
+                let per = grid.w / 10
+                return ((grid.w / 2) - per)
+            }
+        }
+
+        canvas.width = grid.w * grid.t || document.body.offsetWidth;
+        canvas.height = grid.w * grid.t || document.body.offsetHeight;
+
+
+        for (let i = 0; i < grid.t; i++) {
+            grid.grid[i] = new Array(grid.t).fill(0)
+        }
+        for (let i = 0; i < grid.t; i++) {
+            grid.sgrid[i] = new Array(grid.t).fill(10)
+        }
+
+        for (let i = 0; i < grid.t; i++) {
+            for (let j = 0; j < grid.t; j++) {
+                let rnd = Math.random() * 1000 | 0;
+                if (rnd % 6 === 0) {
+                    grid.grid[i][j] = 9;
+                    let xloc =i;
+                    let yloc = j
+                    bombLocations.push({x:xloc,y:yloc})
+                
+                }
+            }
+        }
+
+       
+ let count=0;
+        function update() {
+
+            for (let i = 0; i <= grid.t - 1; i++) {
+                for (let j = 0; j <= grid.t - 1; j++) {
+                    let n = 0;
+                    if (grid.grid[i][j] == 9) {count++;continue};
+                    if (grid.grid[i + 1]) {
+                        if (grid.grid[i + 1][j] == 9) n++;
+                    }
+                    if (grid.grid[i - 1]) {
+                        if (grid.grid[i - 1][j] == 9) n++;
+                    }
+                    if (grid.grid[j + 1]) {
+                        if (grid.grid[i][j + 1] == 9) n++;
+                    }
+                    if (grid.grid[j - 1]) {
+                        if (grid.grid[i][j - 1] == 9) n++;
+                    }
+
+                    if (grid.grid[i + 1] && grid.grid[j + 1]) {
+                        if (grid.grid[i + 1][j + 1] == 9) n++;
+                    }
+                    if (grid.grid[i - 1] && grid.grid[j - 1]) {
+                        if (grid.grid[i - 1][j - 1] == 9) n++;
+                    }
+                    if (grid.grid[i + 1] && grid.grid[j - 1]) {
+                        if (grid.grid[i + 1][j - 1] == 9) n++;
+                    }
+                    if (grid.grid[i - 1] && grid.grid[j + 1]) {
+                        if (grid.grid[i - 1][j + 1] == 9) n++;
+                    }
+                    grid.grid[i][j] = n;
+
+
+                }
+            }
+        }
+        update();
+        
+        let loopcount=0
+        function StartingHelp() {
+            loopcount=0
+        for(let i=0;i<grid.t;i++) {
+            //if(loopcount>0) {break}
+            for(let j=0;j<grid.t;j++) {
+                if(grid.grid[i][j]===0){
+                    grid.sgrid[i][j]=grid.grid[i][j]
+                    neighbours(i,j);
+                    loopcount++
+                    
+                    break;
+                }
+            }
+        }
+        }
+        
+        StartingHelp();
+       
+        
+        
+
+        canvas.addEventListener("click", cb)
+        canvas.addEventListener("contextmenu", cb)
+
+        function cb(e) {
+            e.preventDefault();
+            
+            
+            var mouseX = Math.floor((e.offsetX / grid.w))
+            var mouseY = Math.floor((e.offsetY / grid.w))
+            
+            
+            if(e.which===1) {
+            
+            
+            
+            let hit = grid.grid[mouseX][mouseY]
+
+            //
+            grid.sgrid[mouseX][mouseY] = hit;
+            
+            if(grid.grid[mouseX][mouseY]===9) {
+                lives--;
+                livesDOM.textContent=lives;
+            }
+            
+            if(grid.grid[mouseX][mouseY]===0) {
+                neighbours(mouseX,mouseY)
+            }
+            
+            update();
+            draw();
+            }
+            
+            if(e.which===3) {
+                
+            grid.sgrid[mouseX][mouseY]=11;
+                draw();
+            
+            }
+        }
+        
+        
+        function neighbours(mX,mY,ck=false) {
+            
+            
+            for(let x=mX-1;x<=mX+1;x++) {
+                for(let y=mY-1;y<=mY+1;y++) {
+                    
+                    
+                    if(x==mX && y==mY) {continue}
+                    
+                    
+                     if (x>=0 && x<grid.t && y<grid.t && y>=0) {
+                        
+                       grid.sgrid[x][y]=grid.grid[x][y];
+                         
+                        
+                    }
+                    
+            }
+            }
+            
+        }
+
+
+
+
+        function drawRect(rect, color = '#000') {
+            context.fillStyle = color;
+            context.fillRect(rect.x, rect.y, rect.w, rect.h);
+        }
+
+        function draw() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            livesDOM.innerHTML="&#x2627 "+lives;
+            deadDOM.innerHTML="&#x2620; "+(4-lives)
+            
+            if(lives===0) {
+                setTimeout(function () {
+                    alert("You Lose! \n\nYour browser will now reload")
+                window.location.reload();
+                },250);
+                
+            }
+
+
+
+            for (let i = 0; i < grid.t; i++) {
+                for (let j = 0; j < grid.t; j++) {
+                    //context.fillStyle="grey";
+                    //context.fillRect(i*grid.w+1,j*grid.w+1,grid.w-1,grid.w-1)
+
+                    let value = grid.sgrid[i][j];
+                    if (value === 11) {
+                        context.fillStyle = "lightblue";
+                        context.fillRect(i * grid.w + 1, j * grid.w + 1, grid.w - 1, grid.w - 1)
+                         context.fillStyle = "black";
+                        context.fillText("FLAG", (i * grid.w) + grid.w / 3.5, (j * grid.w) + grid.w / 2);
+                    }
+                    if (value === 10) {
+                        context.fillStyle = "pink";
+                        context.fillRect(i * grid.w + 1, j * grid.w + 1, grid.w - 1, grid.w - 1)
+
+                    }
+                    if (value === 0) {
+                        context.fillStyle = "grey";
+                        context.fillRect(i * grid.w + 1, j * grid.w + 1, grid.w - 1, grid.w - 1)
+                    }
+                    if (value === 9) {
+                        context.fillStyle = "grey";
+                        context.fillRect(i * grid.w + 1, j * grid.w + 1, grid.w - 1, grid.w - 1)
+                        context.fillStyle = "red";
+                        context.fillText("BOMB", (i * grid.w) + scaleX(), (j * grid.w) + grid.w / 2)
+                    } else if (value!==11) {
+                        /*context.fillStyle="darkgrey";
+             context.fillRect(i*grid.w+1,j*grid.w+1,grid.w-1,grid.w-1)*/
+                        context.fillStyle = "blue";
+                        context.fillText(String(value), (i * grid.w) + grid.w / 2, (j * grid.w) + grid.w / 2)
+                    }
+
+                    //
+
+                }
+            }
+        }
+
+        draw();
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+   
+
+    <style>
+        
+        
+        #touchp {
+            position: relative;
+            height:200px;
+            width:200px;
+            background-color: burlywood;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    
+    <p id="touchp">touchbox move 2d-2</p>
+    
+    <br><br><br>
+    
+    <p id="touchm">touchmove data</p>
+    
+     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <script>
+        
+        var docp = document.getElementById("touchp");
+        var docm = document.getElementById("touchm")
+        docp.addEventListener("click", cb)
+        
+        docp.addEventListener("touchmove", cbb, false)
+        docp.addEventListener("touchstart", cb, false)
+        docp.addEventListener("touchend", cb, false);
+        
+        var touchObj = {}
+
+        
+        function cb(e) {
+             e.preventDefault();
+            console.log(e)
+            docp.innerHTML=e.type;
+            if (e.type === "click"){
+            docp.style.marginLeft=String(e.clientX-100)+"px";}
+            
+            if(e.type == "touchstart")
+            {
+                docp.innerHTML=e.type + "  " + touches.length + "  ";
+                for (var i=0; i < e.touches.length; i++) {
+                    docp.innerHTML+=e.touches[i].pageX
+                }
+                
+                //docp.style.marginLeft=e.touches[0].pageX;
+            
+            }
+            if(e.type == "touchend")
+            {
+                docp.innerHTML=e.type + "  ";
+                
+            }
+                
+                
+        }
+        
+        
+        function cbb(e) {
+             e.preventDefault();
+            
+            touchObj.pointX = e.targetTouches[0].pageX;
+      touchObj.pointY = e.targetTouches[0].pageY;
+            
+            docp.style.marginLeft=String(e.changedTouches[0].pageX-100)+"px";
+            docp.style.marginTop=String(touchObj.pointY-100)+"px";
+            
+                docm.innerHTML=" pageX " + e.changedTouches[0].pageX + " clientX " + e.changedTouches[0].clientX + " pageY " + e.changedTouches[0].pageY + " clientY " + e.changedTouches[0].clientY;
+         }
+        
+
+
+    </script>
+</body>
+
+</html>
