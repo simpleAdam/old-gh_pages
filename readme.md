@@ -1,5 +1,5 @@
 ## github site
 
-some small and buggy javascript games
+some small javascript games
 
 currently my old github pages with a Jekyll framework
